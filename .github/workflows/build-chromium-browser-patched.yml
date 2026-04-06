@@ -1,0 +1,37 @@
+name: Build ChromiumBrowser Patched
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore ChromiumBrowserPatched/ChromiumBrowserPatched.csproj
+
+      - name: Publish
+        run: dotnet publish ChromiumBrowserPatched/ChromiumBrowserPatched.csproj -c Release -r win-x64 --self-contained true -o publish/chromiumbrowserpatched-win-x64
+
+      - name: Zip
+        shell: pwsh
+        run: Compress-Archive -Path publish/chromiumbrowserpatched-win-x64/* -DestinationPath ChromiumBrowserPatched-win-x64.zip -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChromiumBrowserPatched-win-x64
+          path: |
+            publish/chromiumbrowserpatched-win-x64
+            ChromiumBrowserPatched-win-x64.zip
