@@ -1,9 +1,9 @@
-name: Build ChromiumBrowser
+name: Build ChromiumBrowser Fixed
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -19,19 +19,19 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore ChromiumBrowser/ChromiumBrowser.csproj
+        run: dotnet restore ChromiumBrowserFixed/ChromiumBrowserFixed.csproj
 
       - name: Publish
-        run: dotnet publish ChromiumBrowser/ChromiumBrowser.csproj -c Release -r win-x64 --self-contained true -o publish/win-x64
+        run: dotnet publish ChromiumBrowserFixed/ChromiumBrowserFixed.csproj -c Release -r win-x64 --self-contained true -o publish/win-x64
 
       - name: Zip
         shell: pwsh
-        run: Compress-Archive -Path publish/win-x64/* -DestinationPath ChromiumBrowser-win-x64.zip -Force
+        run: Compress-Archive -Path publish/win-x64/* -DestinationPath ChromiumBrowserFixed-win-x64.zip -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ChromiumBrowser-win-x64
+          name: ChromiumBrowserFixed-win-x64
           path: |
             publish/win-x64
-            ChromiumBrowser-win-x64.zip
+            ChromiumBrowserFixed-win-x64.zip

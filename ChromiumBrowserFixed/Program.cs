@@ -1,7 +1,7 @@
 using CefSharp;
 using CefSharp.WinForms;
 
-namespace ChromiumBrowser;
+namespace ChromiumBrowserFixed;
 
 internal static class Program
 {
@@ -10,16 +10,13 @@ internal static class Program
     {
         var settings = new CefSettings
         {
-            CachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChromiumBrowser", "Cache"),
-            UserDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChromiumBrowser", "UserData"),
+            CachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChromiumBrowserFixed", "Cache"),
+            UserDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChromiumBrowserFixed", "UserData"),
             Locale = "fr-FR",
             PersistSessionCookies = true,
             PersistUserPreferences = true,
             LogSeverity = LogSeverity.Disable
         };
-
-        settings.CefCommandLineArgs.Add("disable-features", "WinUseBrowserSpellChecker");
-        settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
 
         Cef.EnableHighDPISupport();
         Cef.Initialize(settings);
