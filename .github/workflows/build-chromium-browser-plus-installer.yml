@@ -1,0 +1,42 @@
+name: Build ChromiumBrowser Plus Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-installer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore ChromiumBrowserPlus/ChromiumBrowserPlus.csproj
+
+      - name: Publish app
+        run: dotnet publish ChromiumBrowserPlus/ChromiumBrowserPlus.csproj -c Release -r win-x64 --self-contained true -o publish/chromiumbrowserplus-win-x64
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer\ChromiumBrowserPlus.iss"
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChromiumBrowserPlus-Installer
+          path: |
+            installer\output\ChromiumBrowserPlus-Setup.exe
+            publish\chromiumbrowserplus-win-x64
