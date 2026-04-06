@@ -1,0 +1,47 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore src/NovelAIEdgeLauncher/NovelAIEdgeLauncher.csproj
+
+      - name: Publish single-file EXE
+        run: >
+          dotnet publish src/NovelAIEdgeLauncher/NovelAIEdgeLauncher.csproj
+          -c Release
+          -r win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -o publish/win-x64
+
+      - name: Create ZIP package
+        shell: pwsh
+        run: |
+          Compress-Archive -Path publish/win-x64/* -DestinationPath NovelAI-Edge-Launcher-win-x64.zip -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NovelAI-Edge-Launcher-win-x64
+          path: |
+            publish/win-x64/NovelAIEdgeLauncher.exe
+            NovelAI-Edge-Launcher-win-x64.zip
