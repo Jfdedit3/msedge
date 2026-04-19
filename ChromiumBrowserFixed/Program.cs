@@ -8,17 +8,20 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
+        var dataRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChromiumBrowserFixed");
+        var cachePath = Path.Combine(dataRoot, "Cache");
+
+        Directory.CreateDirectory(dataRoot);
+        Directory.CreateDirectory(cachePath);
+
         var settings = new CefSettings
         {
-            CachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChromiumBrowserFixed", "Cache"),
-            UserDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChromiumBrowserFixed", "UserData"),
+            CachePath = cachePath,
             Locale = "fr-FR",
             PersistSessionCookies = true,
-            PersistUserPreferences = true,
             LogSeverity = LogSeverity.Disable
         };
 
-        Cef.EnableHighDPISupport();
         Cef.Initialize(settings);
 
         ApplicationConfiguration.Initialize();

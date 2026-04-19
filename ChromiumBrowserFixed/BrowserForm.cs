@@ -78,6 +78,7 @@ public sealed class BrowserForm : Form
         {
             Dock = DockStyle.Fill
         };
+        browser.RequestHandler = new AdBlockRequestHandler();
 
         var page = new TabPage("New Tab")
         {
@@ -89,7 +90,8 @@ public sealed class BrowserForm : Form
             if (IsDisposed) return;
             BeginInvoke(new Action(() =>
             {
-                page.Text = Trim(string.IsNullOrWhiteSpace(e.NewValue) ? "New Tab" : e.NewValue, 24);
+                var title = string.IsNullOrWhiteSpace(e.Title) ? "New Tab" : e.Title;
+                page.Text = Trim(title, 24);
             }));
         };
 

@@ -95,6 +95,7 @@ public sealed class BrowserForm : Form
         {
             Dock = DockStyle.Fill
         };
+        browser.RequestHandler = new AdBlockRequestHandler();
 
         var page = new TabPage("New Tab")
         {
@@ -126,7 +127,7 @@ public sealed class BrowserForm : Form
                 SyncUi();
                 if (!e.IsLoading)
                 {
-                    var title = browser.Title;
+                    var title = page.Text;
                     var urlToStore = browser.Address;
                     historyStore.Add(urlToStore, title);
                 }

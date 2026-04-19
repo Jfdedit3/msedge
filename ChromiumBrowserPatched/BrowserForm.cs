@@ -78,6 +78,7 @@ public sealed class BrowserForm : Form
         {
             Dock = DockStyle.Fill
         };
+        browser.RequestHandler = new AdBlockRequestHandler();
 
         var page = new TabPage("New Tab")
         {
